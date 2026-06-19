@@ -8,7 +8,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = "hack_the_campus_secret_secure_key"
 
-DB_NAME = "database.db"
+import os
+
+# Use /tmp/database.db in Vercel serverless functions (writeable folder)
+if os.environ.get("VERCEL"):
+    DB_NAME = "/tmp/database.db"
+else:
+    DB_NAME = "database.db"
 
 # Admin credentials generated dynamically on boot
 ADMIN_USERNAME = "admin"
@@ -20,10 +26,9 @@ ADMIN_PASSWORD_HASH = generate_password_hash("cyberadmin2026")
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    # Drop and recreate teams table to upgrade the schema
-    cur.execute("DROP TABLE IF EXISTS teams")
+    # In Vercel, the app restarts frequently. Do not drop table, just create if not exists.
     cur.execute("""
-    CREATE TABLE teams(
+    CREATE TABLE IF NOT EXISTS teams(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         team_name TEXT NOT NULL,
         leader_name TEXT NOT NULL,

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Mission 1 | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-code"></i> MISSION 1</h2>
+        <span class="difficulty-badge diff-easy">EASY</span>
+    </div>
+    
+    <h4 class="font-orbitron text-white">Decode The Location</h4>
+    
+    <hr class="border-neon mb-4">
+
+    <!-- Mission Context Story -->
+    <div class="mission-story font-mono text-muted mb-4">
+        <p>> A cryptographic message was intercepted from a low-range device on campus. It appears to point to our next physical checkpoint. Apply basic cipher logic to decode it.</p>
+    </div>
+
+    <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Decode the cipher text below.
+    </div>
+
+    <div class="terminal-box text-center font-mono py-4">
+        <h2 class="m-0 text-white tracking-widest">MJCSBSZ</h2>
+        <small class="text-muted d-block mt-2">Hint: Shift each letter backward by 1 (A becomes Z)</small>
+    </div>
+
+    <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
+        <div class="mb-4">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> ANSWER</label>
+            <input
+                type="text"
+                name="answer"
+                class="form-control hacker-input text-uppercase font-mono"
+                placeholder="Enter decoded location..."
+                required>
+        </div>
+
+        <button type="submit" class="btn btn-neon w-100 font-orbitron">
+            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+        </button>
+    </form>
+
+    {% if error %}
+    <div class="error-msg mt-3 font-mono">
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            CyberSound.playError();
+        });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

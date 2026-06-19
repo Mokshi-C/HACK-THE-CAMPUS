@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Ops Control Dashboard | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card-gold" style="max-width: 1100px;">
+    <!-- Dashboard Header -->
+    <div class="admin-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="font-orbitron text-gold m-0"><i class="fa-solid fa-satellite-dish"></i> MISSION CONTROL ROOM</h1>
+            <p class="font-mono text-muted mb-0">Operational real-time overview and telemetry stats</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/admin/export" class="btn btn-gold font-mono btn-sm">
+                <i class="fa-solid fa-file-csv"></i> EXPORT DATA (CSV)
+            </a>
+            <a href="/admin/logout" class="btn btn-outline-danger font-mono btn-sm">
+                <i class="fa-solid fa-sign-out-alt"></i> LOCK OPS
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4 font-mono">
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-card">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-val">{{ total_teams }}</div>
+                <div class="stat-label">TOTAL TEAMS</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-card">
+                <div class="stat-icon text-neon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-val text-neon">{{ completed_teams }}</div>
+                <div class="stat-label">COMPLETED TEAMS</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="admin-card">
+                <div class="stat-icon text-warning"><i class="fa-solid fa-spinner animate-pulse"></i></div>
+                <div class="stat-val text-warning">{{ active_teams }}</div>
+                <div class="stat-label">ACTIVE TEAMS</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12">
+            <div class="admin-card">
+                <div class="stat-icon text-danger"><i class="fa-solid fa-bolt"></i></div>
+                <div class="stat-val text-white fs-6" style="word-break: break-all;">{{ fastest_team }}</div>
+                <div class="stat-label">FASTEST EXECUTION</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <form method="GET" action="/admin" class="row g-2 mb-4 font-mono">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-black border-warning text-gold"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control hacker-input border-warning"
+                    placeholder="Search by team, leader, or phone..."
+                    value="{{ search }}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="filter" class="form-select hacker-input border-warning" onchange="this.form.submit()">
+                <option value="all" {% if filter == 'all' %}selected{% endif %}>All Team Signatures</option>
+                <option value="completed" {% if filter == 'completed' %}selected{% endif %}>Override Successful (Completed)</option>
+                <option value="active" {% if filter == 'active' %}selected{% endif %}>Active Connections</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-gold w-100 font-orbitron">SCAN</button>
+        </div>
+    </form>
+
+    <!-- Teams Table Grid -->
+    <div class="table-responsive">
+        <table class="cyber-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>TEAM (LEADER)</th>
+                    <th>CONTACT</th>
+                    <th class="text-center">CURRENT ACTIVE</th>
+                    <th class="text-center">SCORE</th>
+                    <th class="text-center">START / END TIME</th>
+                    <th class="text-end">DURATION</th>
+                </tr>
+            </thead>
+            <tbody class="font-mono" style="font-size: 0.85rem;">
+                {% for team in teams %}
+                <tr>
+                    <td>{{ team.id }}</td>
+                    <td>
+                        <strong class="text-white">{{ team.team_name }}</strong><br>
+                        <span class="text-muted"><i class="fa-solid fa-user-tie"></i> {{ team.leader_name }}</span>
+                    </td>
+                    <td><i class="fa-solid fa-phone text-gold"></i> {{ team.phone }}</td>
+                    <td class="text-center">
+                        {% if team.completed == 1 %}
+                            <span class="badge bg-success text-black"><i class="fa-solid fa-check-double"></i> COMPLETE</span>
+                        {% else %}
+                            <span class="badge bg-warning text-black"><i class="fa-solid fa-play"></i> MISSION {{ team.current_level }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center text-neon font-weight-bold">{{ team.score }} PTS</td>
+                    <td class="text-center" style="font-size: 0.75rem;">
+                        <span class="text-muted">S:</span> {{ team.start_time }}<br>
+                        <span class="text-muted">F:</span> {{ team.finish_time }}
+                    </td>
+                    <td class="text-end text-neon">{{ team.formatted_time }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="fa-solid fa-database"></i> No records matching search queries found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Simulated QR Code Test Links for Admins -->
+    <div class="mt-5 p-4 border border-warning rounded bg-black">
+        <h5 class="text-warning font-orbitron mb-3"><i class="fa-solid fa-bug"></i> OPS SIMULATOR PANEL</h5>
+        <p class="font-mono text-muted mb-3">Click these simulator links to trigger a QR scan for the currently active team session. This bypasses the need for physical scanners during dev testing.</p>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="/qr/2" target="_blank" class="btn btn-outline-neon font-mono btn-sm">
+                <i class="fa-solid fa-qrcode"></i> Scan QR #2 (Library)
+            </a>
+            <a href="/qr/3" target="_blank" class="btn btn-outline-neon font-mono btn-sm">
+                <i class="fa-solid fa-qrcode"></i> Scan QR #3 (Seminar Hall)
+            </a>
+            <a href="/qr/4" target="_blank" class="btn btn-outline-neon font-mono btn-sm">
+                <i class="fa-solid fa-qrcode"></i> Scan QR #4 (Block C)
+            </a>
+            <a href="/qr/5" target="_blank" class="btn btn-outline-neon font-mono btn-sm">
+                <i class="fa-solid fa-qrcode"></i> Scan QR #5 (Master Server)
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

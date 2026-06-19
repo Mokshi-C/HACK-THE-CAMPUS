@@ -1,0 +1,489 @@
+/* CSS Root Variables & Cyber Theme Design System */
+:root {
+    --bg-color: #050505;
+    --neon-green: #00ff88;
+    --neon-glow: 0 0 15px rgba(0, 255, 136, 0.4);
+    --neon-glow-heavy: 0 0 25px rgba(0, 255, 136, 0.7);
+    --cyber-gold: #FFD700;
+    --gold-glow: 0 0 15px rgba(255, 215, 0, 0.4);
+    --panel-bg: rgba(10, 10, 10, 0.85);
+    --glass-border: 1px solid rgba(0, 255, 136, 0.25);
+    --gold-border: 1px solid rgba(255, 215, 0, 0.25);
+    --terminal-green: rgba(0, 255, 136, 0.85);
+}
+
+body {
+    background: var(--bg-color);
+    color: #ffffff;
+    font-family: 'Fira Code', Consolas, monospace;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Floating Particles Canvas */
+#cyber-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: var(--bg-color);
+}
+
+/* Cyber Navbar */
+.cyber-nav {
+    background: rgba(5, 5, 5, 0.95);
+    border-bottom: 2px solid var(--neon-green);
+    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.15);
+    z-index: 100;
+    padding: 10px 0;
+}
+
+.navbar-brand-cyber {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--neon-green) !important;
+    text-shadow: var(--neon-glow);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.text-neon {
+    color: var(--neon-green);
+    text-shadow: var(--neon-glow);
+}
+
+.text-gold {
+    color: var(--cyber-gold);
+    text-shadow: var(--gold-glow);
+}
+
+/* Team Status Dashboard */
+.team-status-panel {
+    background: rgba(15, 15, 15, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 8px;
+    padding: 6px 16px;
+}
+
+.status-item {
+    font-size: 0.9rem;
+}
+
+.status-item .label {
+    color: #888;
+    margin-right: 4px;
+}
+
+.status-item .value {
+    font-weight: bold;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+    display: flex;
+    flex-direction: column;
+    width: 160px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.progress-bar-ascii {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.badge-success-cyber {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--neon-green);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--neon-green);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Main layouts */
+.main-container {
+    position: relative;
+    z-index: 10;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Glassmorphism Cyber Card */
+.cyber-card {
+    background: var(--panel-bg);
+    border: var(--glass-border);
+    border-radius: 12px;
+    box-shadow: var(--neon-glow);
+    padding: 35px;
+    width: 100%;
+    max-width: 650px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+    box-shadow: var(--neon-glow-heavy);
+    border-color: rgba(0, 255, 136, 0.4);
+}
+
+.cyber-card-gold {
+    background: var(--panel-bg);
+    border: var(--gold-border);
+    border-radius: 12px;
+    box-shadow: var(--gold-glow);
+    padding: 35px;
+    width: 100%;
+    max-width: 650px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.cyber-card-gold:hover {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+    border-color: rgba(255, 215, 0, 0.45);
+}
+
+/* Font styles */
+.font-mono {
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.font-orbitron {
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Titles */
+.cyber-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    color: var(--neon-green);
+    text-shadow: var(--neon-glow);
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
+.cyber-title-gold {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    color: var(--cyber-gold);
+    text-shadow: var(--gold-glow);
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
+.cyber-subtitle {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+/* Terminal Console Box */
+.terminal-box {
+    background: #000000;
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--neon-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.terminal-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(0, 255, 136, 0.1);
+    animation: scanner-line 4s linear infinite;
+}
+
+/* Form Inputs */
+.hacker-input {
+    background: #000000 !important;
+    border: 1px solid rgba(0, 255, 136, 0.3) !important;
+    color: #ffffff !important;
+    font-family: 'Fira Code', monospace;
+    border-radius: 6px !important;
+    padding: 12px 15px !important;
+    transition: all 0.25s ease !important;
+}
+
+.hacker-input::placeholder {
+    color: #555555;
+}
+
+.hacker-input:focus {
+    border-color: var(--neon-green) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.4) !important;
+    outline: none !important;
+}
+
+/* Buttons styling */
+.btn-neon {
+    background: transparent;
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 12px 20px;
+    box-shadow: var(--neon-glow);
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.btn-neon:hover {
+    background: var(--neon-green);
+    color: #000000;
+    box-shadow: var(--neon-glow-heavy);
+}
+
+.btn-gold {
+    background: transparent;
+    color: var(--cyber-gold);
+    border: 1px solid var(--cyber-gold);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 12px 20px;
+    box-shadow: var(--gold-glow);
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.btn-gold:hover {
+    background: var(--cyber-gold);
+    color: #000000;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+}
+
+.btn-outline-neon {
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+    background: transparent;
+}
+
+.btn-outline-neon:hover {
+    background: var(--neon-green);
+    color: #000000;
+}
+
+.btn-outline-gold {
+    color: var(--cyber-gold);
+    border: 1px solid var(--cyber-gold);
+    background: transparent;
+}
+
+.btn-outline-gold:hover {
+    background: var(--cyber-gold);
+    color: #000000;
+}
+
+.logout-btn {
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #dc3545;
+}
+
+.logout-btn:hover {
+    background: #dc3545;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+/* Animations */
+@keyframes scanner-line {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(1000%); }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.7; }
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* Difficulty Indicators */
+.difficulty-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.diff-easy {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+}
+
+.diff-medium {
+    background: rgba(255, 215, 0, 0.15);
+    color: var(--cyber-gold);
+    border: 1px solid var(--cyber-gold);
+}
+
+.diff-hard {
+    background: rgba(255, 68, 68, 0.15);
+    color: #ff4444;
+    border: 1px solid #ff4444;
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+}
+
+/* Error and Alert Messages */
+.error-msg {
+    color: #ff4444;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Tables styling */
+.cyber-table {
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    width: 100%;
+}
+
+.cyber-table th {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-green);
+    border-bottom: 2px solid var(--neon-green);
+    padding: 12px 10px;
+    text-shadow: var(--neon-glow);
+}
+
+.cyber-table tr {
+    background: rgba(20, 20, 20, 0.6);
+    transition: all 0.25s ease;
+}
+
+.cyber-table tr:hover {
+    background: rgba(30, 30, 30, 0.8);
+    transform: scale(1.01);
+}
+
+.cyber-table td {
+    padding: 14px 10px;
+    border-top: 1px solid rgba(0, 255, 136, 0.1);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    vertical-align: middle;
+}
+
+.cyber-table tr td:first-child {
+    border-left: 1px solid rgba(0, 255, 136, 0.15);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.cyber-table tr td:last-child {
+    border-right: 1px solid rgba(0, 255, 136, 0.15);
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* Medals for Leaderboard */
+.medal-1st {
+    color: var(--cyber-gold);
+    text-shadow: var(--gold-glow);
+    font-size: 1.25rem;
+}
+
+.medal-2nd {
+    color: #C0C0C0;
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.4);
+    font-size: 1.25rem;
+}
+
+.medal-3rd {
+    color: #CD7F32;
+    text-shadow: 0 0 10px rgba(205, 127, 50, 0.4);
+    font-size: 1.25rem;
+}
+
+/* Admin Dashboard Styling */
+.admin-header {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.admin-card {
+    background: rgba(10, 10, 10, 0.85);
+    border: var(--gold-border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--gold-glow);
+}
+
+.admin-card .stat-icon {
+    font-size: 2.2rem;
+    color: var(--cyber-gold);
+    text-shadow: var(--gold-glow);
+    margin-bottom: 10px;
+}
+
+.admin-card .stat-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.admin-card .stat-label {
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* Cursor Flashing Effect */
+.cursor-blink {
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--neon-green); }
+}
+
+.text-gold-gradient {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

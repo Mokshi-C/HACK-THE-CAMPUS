@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Mission Complete | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card-gold text-center">
+    <div class="mb-4">
+        <i class="fa-solid fa-circle-check text-neon fa-4x animate-pulse"></i>
+    </div>
+    
+    <h1 class="cyber-title-gold font-orbitron">MISSION COMPLETE</h1>
+    <h4 class="font-mono text-white mb-4">✅ CHALLENGE SOLVED SUCCESSFULLY</h4>
+    
+    <hr class="border-gold my-4">
+
+    <div class="row font-mono text-start justify-content-center">
+        <div class="col-md-8 bg-black border border-warning rounded p-3 mb-4">
+            <div class="d-flex justify-content-between mb-2">
+                <span><i class="fa-solid fa-plus text-neon"></i> SCORE REWARD:</span>
+                <span class="text-neon font-weight-bold">+100 Points</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span><i class="fa-solid fa-key text-gold"></i> REWARD SECURED:</span>
+                <span class="text-gold font-weight-bold">🔑 Key Fragment [{{ reward }}]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="terminal-box bg-dark my-4 font-mono text-center">
+        <h5 class="text-warning mb-3"><i class="fa-solid fa-person-running"></i> PHYSICAL MOVEMENT REQUIRED</h5>
+        <h4 class="text-white">Proceed to <span class="text-gold">{{ next_loc }}</span> and scan <span class="text-neon">QR #{{ next_qr }}</span></h4>
+    </div>
+
+    <!-- Debug/Development Simulation Panel -->
+    <div class="dev-panel mt-5 p-3 border border-secondary rounded bg-black">
+        <p class="font-mono text-muted text-start mb-2"><i class="fa-solid fa-bug text-danger"></i> Local Testing Developer Mode</p>
+        <a href="/qr/{{ next_qr }}" class="btn btn-outline-neon w-100 font-mono" onclick="CyberSound.playSuccess()">
+            <i class="fa-solid fa-qrcode"></i> Simulate Scanning QR #{{ next_qr }}
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Play success chime immediately on load
+    window.addEventListener('load', () => {
+        CyberSound.playSuccess();
+    });
+</script>
+{% endblock %}

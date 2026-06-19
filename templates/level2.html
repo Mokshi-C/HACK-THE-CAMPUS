@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Mission 2 | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-microchip"></i> MISSION 2</h2>
+        <span class="difficulty-badge diff-medium">MEDIUM</span>
+    </div>
+    
+    <h4 class="font-orbitron text-white">Crack The Logic</h4>
+    
+    <hr class="border-neon mb-4">
+
+    <!-- Mission Context Story -->
+    <div class="mission-story font-mono text-muted mb-4">
+        <p>> You have breached the subnet terminal gateway. To obtain the control code, evaluate the output of the server execution snippet below.</p>
+    </div>
+
+    <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Calculate the console output of this python code block.
+    </div>
+
+    <div class="terminal-box bg-black py-3">
+        <pre class="m-0 text-neon font-mono">
+x = 5
+y = 3
+
+print(x**y)
+        </pre>
+    </div>
+
+    <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
+        <div class="mb-4">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> COMPILER OUTPUT</label>
+            <input
+                type="text"
+                name="answer"
+                class="form-control hacker-input font-mono"
+                placeholder="Enter calculation result..."
+                required>
+        </div>
+
+        <button type="submit" class="btn btn-neon w-100 font-orbitron">
+            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+        </button>
+    </form>
+
+    {% if error %}
+    <div class="error-msg mt-3 font-mono">
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            CyberSound.playError();
+        });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

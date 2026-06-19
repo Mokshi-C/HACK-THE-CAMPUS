@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Operations Login | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card-gold">
+    <div class="text-center mb-4">
+        <i class="fa-solid fa-lock text-gold fa-3x mb-2"></i>
+        <h2 class="font-orbitron text-gold m-0">OPS CONTROL ROOM</h2>
+        <p class="font-mono text-muted">System Administrator Authorization Portal</p>
+    </div>
+    
+    <hr class="border-gold mb-4">
+
+    <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
+        <div class="mb-3">
+            <label class="form-label text-gold font-mono"><i class="fa-solid fa-user-secret"></i> USERNAME</label>
+            <input
+                type="text"
+                name="username"
+                class="form-control hacker-input border-warning"
+                placeholder="Enter admin ID"
+                required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label text-gold font-mono"><i class="fa-solid fa-key"></i> SECURITY PASSPHRASE</label>
+            <input
+                type="password"
+                name="password"
+                class="form-control hacker-input border-warning"
+                placeholder="Enter access passcode"
+                required>
+        </div>
+
+        <button type="submit" class="btn btn-gold w-100 font-orbitron">
+            <i class="fa-solid fa-right-to-bracket"></i> DECRYPT & AUTHORIZE
+        </button>
+    </form>
+
+    {% if error %}
+    <div class="error-msg text-warning mt-3 font-mono">
+        <i class="fa-solid fa-circle-exclamation text-warning"></i> {{ error }}
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            CyberSound.playError();
+        });
+    </script>
+    {% endif %}
+    
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-secondary btn-sm font-mono">
+            <i class="fa-solid fa-house"></i> Home Terminal
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Access Granted | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card-gold text-center py-5">
+    <div class="mb-4">
+        <i class="fa-solid fa-trophy text-gold fa-5x animate-pulse"></i>
+    </div>
+
+    <div class="font-mono text-neon mb-2">
+        ═════════════════════════════════════
+    </div>
+    <h1 class="font-orbitron text-gold font-weight-bold tracking-widest my-3">MASTER SERVER ACCESSED</h1>
+    <h2 class="font-mono text-neon tracking-widest mb-3">🔓 ACCESS GRANTED</h2>
+    <div class="font-mono text-neon mb-4">
+        ═════════════════════════════════════
+    </div>
+
+    <div class="my-4 font-orbitron">
+        <h3 class="text-white">CONGRATULATIONS</h3>
+        <h2 class="text-gold-gradient font-weight-bold">{{ team_name }}</h2>
+    </div>
+
+    <hr class="border-gold my-4" style="opacity: 0.3;">
+
+    <div class="row justify-content-center font-mono my-4">
+        <div class="col-md-8 bg-black border border-warning rounded p-4 text-start">
+            <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
+                <span><i class="fa-solid fa-clock text-gold"></i> COMPLETION TIME:</span>
+                <span class="text-white font-weight-bold">{{ formatted_time }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span><i class="fa-solid fa-heart-pulse text-neon"></i> MISSION STATUS:</span>
+                <span class="text-neon font-weight-bold">SUCCESSFUL</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column gap-2 mt-4">
+        <a href="/leaderboard" class="btn btn-gold w-100 font-orbitron py-3">
+            <i class="fa-solid fa-list-ol"></i> VIEW LEADERBOARD
+        </a>
+        <a href="/logout" class="btn btn-outline-secondary w-100 font-mono btn-sm">
+            Exit System Session
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Play celebratory victory sound once loaded
+    window.addEventListener('load', () => {
+        CyberSound.playVictory();
+    });
+</script>
+{% endblock %}

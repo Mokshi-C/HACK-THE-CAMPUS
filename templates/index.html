@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Initializing System | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card">
+    <div class="text-center mb-4">
+        <h4 class="font-orbitron text-neon animate-pulse mb-1">ASYMMETRIC CLUB</h4>
+        <h6 class="font-mono text-muted mb-4">Chennai Institute of Technology</h6>
+        
+        <h1 class="cyber-title font-orbitron">HACK THE CAMPUS</h1>
+        <p class="font-mono text-gold"><i class="fa-solid fa-qrcode"></i> AR + QR Cyber Treasure Hunt</p>
+    </div>
+
+    <!-- Terminal Animation Window -->
+    <div class="terminal-box" id="terminal-boot">
+        <div id="typed-strings">
+            <p>> Initializing Mission Control Center... <span class="text-white">[OK]</span></p>
+            <p>> Mapping Campus Network Gateways... <span class="text-white">[OK]</span></p>
+            <p>> Searching for Active Hackers... <span class="text-white">[READY]</span></p>
+            <p>> Enter team parameters to establish connection...</p>
+        </div>
+        <div id="typed-output"></div>
+    </div>
+
+    <form action="/register" method="POST" class="mt-4" onsubmit="CyberSound.playSuccess()">
+        <div class="mb-3">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-signature"></i> TEAM NAME</label>
+            <input
+                type="text"
+                class="form-control hacker-input"
+                name="team_name"
+                placeholder="Enter unique team name"
+                required
+                autocomplete="off">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-user-ninja"></i> TEAM LEADER</label>
+            <input
+                type="text"
+                class="form-control hacker-input"
+                name="leader_name"
+                placeholder="Leader full name"
+                required
+                autocomplete="off">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-phone"></i> PHONE NUMBER</label>
+            <input
+                type="tel"
+                class="form-control hacker-input"
+                name="phone"
+                placeholder="Contact number for briefing"
+                required
+                autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn btn-neon w-100 mt-3 font-orbitron">
+            <i class="fa-solid fa-terminal"></i> START MISSION
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple custom typing effect for the terminal screen
+    const strings = Array.from(document.querySelectorAll('#typed-strings p')).map(p => p.innerHTML);
+    const output = document.getElementById('typed-output');
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    function typeLine() {
+        if (lineIndex < strings.length) {
+            let currentString = strings[lineIndex];
+            
+            // Render line instantly or char-by-char. Since it's a code terminal, line-by-line is nice but typing is cool.
+            // Let's type it out fast.
+            output.innerHTML += currentString + "<br>";
+            lineIndex++;
+            CyberSound.playTick();
+            setTimeout(typeLine, 600);
+        } else {
+            // Append flashing cursor
+            output.innerHTML += '<span class="text-neon cursor-blink border-start border-2 border-neon">&nbsp;</span>';
+        }
+    }
+    
+    // Start typing after a short delay
+    setTimeout(typeLine, 500);
+</script>
+{% endblock %}

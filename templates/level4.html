@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Mission 4 | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-network-wired"></i> MISSION 4</h2>
+        <span class="difficulty-badge diff-hard">HARD</span>
+    </div>
+    
+    <h4 class="font-orbitron text-white">Binary Transmission</h4>
+    
+    <hr class="border-neon mb-4">
+
+    <!-- Mission Context Story -->
+    <div class="mission-story font-mono text-muted mb-4">
+        <p>> A high-priority stream of binary packets is broadcasting over the terminal nodes. The stream has been captured below. Decode the bytes into their plain ASCII character representations.</p>
+    </div>
+
+    <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Convert the binary code block to text characters.
+    </div>
+
+    <div class="terminal-box text-center font-mono py-3">
+        <div class="d-inline-block text-start text-white" style="letter-spacing: 2px;">
+            01000010<br>
+            01000101<br>
+            01010100<br>
+            01000001
+        </div>
+    </div>
+
+    <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
+        <div class="mb-4">
+            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> DECODED VALUE</label>
+            <input
+                type="text"
+                name="answer"
+                class="form-control hacker-input text-uppercase font-mono"
+                placeholder="Enter decoded text string..."
+                required>
+        </div>
+
+        <button type="submit" class="btn btn-neon w-100 font-orbitron">
+            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+        </button>
+    </form>
+
+    {% if error %}
+    <div class="error-msg mt-3 font-mono">
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            CyberSound.playError();
+        });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

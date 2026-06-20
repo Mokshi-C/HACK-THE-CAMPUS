@@ -9,22 +9,22 @@
         <span class="difficulty-badge diff-easy">EASY</span>
     </div>
     
-    <h4 class="font-orbitron text-white">Decode The Location</h4>
+    <h4 class="font-orbitron text-white">Archive Breach: Cipher Challenge</h4>
     
     <hr class="border-neon mb-4">
 
     <!-- Mission Context Story -->
     <div class="mission-story font-mono text-muted mb-4">
-        <p>> A cryptographic message was intercepted from a low-range device on campus. It appears to point to our next physical checkpoint. Apply basic cipher logic to decode it.</p>
+        <p>> A cryptographic signature was intercepted from an offline backup server. ShadowByte used a simple shift cipher to encode the physical coordinate node. Apply standard decryptions to proceed.</p>
     </div>
 
     <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Decode the cipher text below.
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Decode the cipher text below to locate the target coordinate gateway.
     </div>
 
     <div class="terminal-box text-center font-mono py-4">
         <h2 class="m-0 text-white tracking-widest">MJCSBSZ</h2>
-        <small class="text-muted d-block mt-2">Hint: Shift each letter backward by 1 (A becomes Z)</small>
+        <small class="text-muted d-block mt-2">Telemetry Hint: Shift letters backward by 1 (A becomes Z)</small>
     </div>
 
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
@@ -39,7 +39,7 @@
         </div>
 
         <button type="submit" class="btn btn-neon w-100 font-orbitron">
-            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+            <i class="fa-solid fa-circle-check"></i> DECRYPT AND SECURE SEGMENT
         </button>
     </form>
 
@@ -54,4 +54,15 @@
     </script>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        // Trigger mission sound readouts
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission 1: Archive Breach. ShadowByte has breached the archive logs. Locate the hidden coordinate key fragment to track the intrusion path.");
+        }, 800);
+    });
+</script>
 {% endblock %}

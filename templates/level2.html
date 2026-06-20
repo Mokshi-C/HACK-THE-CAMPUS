@@ -5,21 +5,21 @@
 {% block content %}
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-microchip"></i> MISSION 2</h2>
+        <h2 class="font-orbitron text-blue m-0"><i class="fa-solid fa-microchip"></i> MISSION 2</h2>
         <span class="difficulty-badge diff-medium">MEDIUM</span>
     </div>
     
-    <h4 class="font-orbitron text-white">Crack The Logic</h4>
+    <h4 class="font-orbitron text-white">Code Override: Logic Execution</h4>
     
     <hr class="border-neon mb-4">
 
     <!-- Mission Context Story -->
     <div class="mission-story font-mono text-muted mb-4">
-        <p>> You have breached the subnet terminal gateway. To obtain the control code, evaluate the output of the server execution snippet below.</p>
+        <p>> ShadowByte has locked down the network interface gateway with a computational script logic barrier. Simulate the execution stack of the Python script below to determine the exit code signature.</p>
     </div>
 
     <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Calculate the console output of this python code block.
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Calculate the output printed by the compiler loop block.
     </div>
 
     <div class="terminal-box bg-black py-3">
@@ -33,7 +33,7 @@ print(x**y)
 
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
-            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> COMPILER OUTPUT</label>
+            <label class="form-label text-blue font-mono"><i class="fa-solid fa-terminal"></i> COMPILE SIGNAL VALUE</label>
             <input
                 type="text"
                 name="answer"
@@ -43,7 +43,7 @@ print(x**y)
         </div>
 
         <button type="submit" class="btn btn-neon w-100 font-orbitron">
-            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+            <i class="fa-solid fa-circle-check"></i> OVERRIDE & EXPLOIT
         </button>
     </form>
 
@@ -58,4 +58,14 @@ print(x**y)
     </script>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission 2: Code Override. Evaluate the server execution code block. We need the final compile signal output to unlock the gateway.");
+        }, 800);
+    });
+</script>
 {% endblock %}

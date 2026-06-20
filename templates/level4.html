@@ -5,25 +5,25 @@
 {% block content %}
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-network-wired"></i> MISSION 4</h2>
+        <h2 class="font-orbitron text-danger m-0"><i class="fa-solid fa-network-wired"></i> MISSION 4</h2>
         <span class="difficulty-badge diff-hard">HARD</span>
     </div>
     
-    <h4 class="font-orbitron text-white">Binary Transmission</h4>
+    <h4 class="font-orbitron text-white">Hidden Protocol: Binary Decoder</h4>
     
-    <hr class="border-neon mb-4">
+    <hr class="border-danger mb-4">
 
     <!-- Mission Context Story -->
     <div class="mission-story font-mono text-muted mb-4">
-        <p>> A high-priority stream of binary packets is broadcasting over the terminal nodes. The stream has been captured below. Decode the bytes into their plain ASCII character representations.</p>
+        <p>> A binary packet stream broadcast is looping on the subnet receiver. Use ASCII translation charts to decode the signal byte flags into their plain text representation.</p>
     </div>
 
     <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Convert the binary code block to text characters.
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Convert the binary code array below into a readable word string.
     </div>
 
     <div class="terminal-box text-center font-mono py-3">
-        <div class="d-inline-block text-start text-white" style="letter-spacing: 2px;">
+        <div class="d-inline-block text-start text-white font-mono" style="letter-spacing: 2px; font-size: 1.25rem;">
             01000010<br>
             01000101<br>
             01010100<br>
@@ -33,17 +33,17 @@
 
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
-            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> DECODED VALUE</label>
+            <label class="form-label text-danger font-mono"><i class="fa-solid fa-terminal"></i> DECODED ASCII SIGNAL</label>
             <input
                 type="text"
                 name="answer"
-                class="form-control hacker-input text-uppercase font-mono"
+                class="form-control hacker-input text-uppercase font-mono border-danger"
                 placeholder="Enter decoded text string..."
                 required>
         </div>
 
         <button type="submit" class="btn btn-neon w-100 font-orbitron">
-            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+            <i class="fa-solid fa-circle-check"></i> TRANSLATE SIGNAL
         </button>
     </form>
 
@@ -58,4 +58,14 @@
     </script>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission 4: Hidden Protocol. Decode the high-priority binary stream into its equivalent ASCII characters to secure the final fragment key.");
+        }, 800);
+    });
+</script>
 {% endblock %}

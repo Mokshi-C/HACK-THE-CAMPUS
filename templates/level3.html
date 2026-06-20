@@ -6,30 +6,30 @@
 {% block content %}
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-spider"></i> MISSION 3</h2>
+        <h2 class="font-orbitron text-blue m-0"><i class="fa-solid fa-spider"></i> MISSION 3</h2>
         <span class="difficulty-badge diff-medium">MEDIUM</span>
     </div>
     
-    <h4 class="font-orbitron text-white">Hidden System Clue</h4>
+    <h4 class="font-orbitron text-white">Hash Hunter: Inspect Clue</h4>
     
     <hr class="border-neon mb-4">
 
     <!-- Mission Context Story -->
     <div class="mission-story font-mono text-muted mb-4">
-        <p>> The node firewall is active, hiding the security passcode. It has been hidden where standard browsers don't render. You must think like a hacker to inspect the underlying system construct.</p>
+        <p>> ShadowByte hid a system key within the template scaffolding of the interface node. It is invisible to standard browsers. Think like an analyst and inspect the document's head structure or comments.</p>
     </div>
 
     <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Find the hidden credentials on this page. Inspect the source structure of the web document.
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Find the hidden clue comment tag. Inspect the raw source structure.
     </div>
 
     <div class="terminal-box bg-black text-center font-mono py-3">
-        <span class="text-white"><i class="fa-solid fa-eye-slash"></i> Clue status: invisible_mode = active</span>
+        <span class="text-white"><i class="fa-solid fa-eye-slash"></i> SYSTEM_STATE: invisible_mode = active</span>
     </div>
 
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
-            <label class="form-label text-neon font-mono"><i class="fa-solid fa-terminal"></i> CLUE TOKEN</label>
+            <label class="form-label text-blue font-mono"><i class="fa-solid fa-terminal"></i> SECRET HASH CODE</label>
             <input
                 type="text"
                 name="answer"
@@ -39,7 +39,7 @@
         </div>
 
         <button type="submit" class="btn btn-neon w-100 font-orbitron">
-            <i class="fa-solid fa-circle-check"></i> SUBMIT SOLUTION
+            <i class="fa-solid fa-circle-check"></i> SUBMIT KEY TOKEN
         </button>
     </form>
 
@@ -54,4 +54,14 @@
     </script>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission 3: Hash Hunter. The system token is hidden inside the underlying system layout structure. Open developer tools or view source code to inspect and crack the firewall.");
+        }, 800);
+    });
+</script>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block title %}Ops Control Dashboard | HACK THE CAMPUS{% endblock %}
 
 {% block content %}
-<div class="cyber-card-gold" style="max-width: 1100px;">
+<div class="cyber-card-gold" style="max-width: 1150px;">
     <!-- Dashboard Header -->
     <div class="admin-header d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
@@ -45,9 +45,11 @@
         </div>
         <div class="col-md-3 col-sm-12">
             <div class="admin-card">
-                <div class="stat-icon text-danger"><i class="fa-solid fa-bolt"></i></div>
-                <div class="stat-val text-white fs-6" style="word-break: break-all;">{{ fastest_team }}</div>
-                <div class="stat-label">FASTEST EXECUTION</div>
+                <div class="stat-icon text-gold"><i class="fa-solid fa-crown"></i></div>
+                <div class="stat-val text-gold fs-6" style="word-break: break-all;">
+                    {{ winner_team if winner_team else 'NO WINNER YET' }}
+                </div>
+                <div class="stat-label">WINNER DETECTED</div>
             </div>
         </div>
     </div>
@@ -86,6 +88,7 @@
                     <th>TEAM (LEADER)</th>
                     <th>CONTACT</th>
                     <th class="text-center">CURRENT ACTIVE</th>
+                    <th class="text-center">REMAINING TIME</th>
                     <th class="text-center">SCORE</th>
                     <th class="text-center">START / END TIME</th>
                     <th class="text-end">DURATION</th>
@@ -93,18 +96,33 @@
             </thead>
             <tbody class="font-mono" style="font-size: 0.85rem;">
                 {% for team in teams %}
-                <tr>
+                <tr {% if team.winner_status %}style="border: 2px solid #FFD700; box-shadow: var(--gold-glow);"{% endif %}>
                     <td>{{ team.id }}</td>
                     <td>
-                        <strong class="text-white">{{ team.team_name }}</strong><br>
+                        <strong class="text-white">{{ team.team_name }}</strong>
+                        {% if team.winner_status %}
+                            <span class="badge bg-warning text-black ms-2"><i class="fa-solid fa-crown"></i> WINNER</span>
+                        {% endif %}
+                        <br>
                         <span class="text-muted"><i class="fa-solid fa-user-tie"></i> {{ team.leader_name }}</span>
                     </td>
                     <td><i class="fa-solid fa-phone text-gold"></i> {{ team.phone }}</td>
                     <td class="text-center">
                         {% if team.completed == 1 %}
                             <span class="badge bg-success text-black"><i class="fa-solid fa-check-double"></i> COMPLETE</span>
+                        {% elif team.remaining_seconds <= 0 %}
+                            <span class="badge bg-danger text-white"><i class="fa-solid fa-triangle-exclamation"></i> TIMEOUT</span>
                         {% else %}
                             <span class="badge bg-warning text-black"><i class="fa-solid fa-play"></i> MISSION {{ team.current_level }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center font-mono">
+                        {% if team.completed == 1 %}
+                            <span class="text-muted">N/A (Solved)</span>
+                        {% elif team.remaining_seconds <= 0 %}
+                            <span class="text-danger">00:00 (Expired)</span>
+                        {% else %}
+                            <span class="text-warning font-weight-bold countdown-tracker" data-seconds="{{ team.remaining_seconds }}">{{ team.remaining_time_formatted }}</span>
                         {% endif %}
                     </td>
                     <td class="text-center text-neon font-weight-bold">{{ team.score }} PTS</td>
@@ -116,7 +134,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
+                    <td colspan="8" class="text-center text-muted py-4">
                         <i class="fa-solid fa-database"></i> No records matching search queries found.
                     </td>
                 </tr>
@@ -145,4 +163,28 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Live countdown updates for all active teams inside admin tables
+    document.addEventListener('DOMContentLoaded', () => {
+        const trackers = document.querySelectorAll('.countdown-tracker');
+        setInterval(() => {
+            trackers.forEach(el => {
+                let sec = parseInt(el.getAttribute('data-seconds'));
+                if (sec > 0) {
+                    sec--;
+                    el.setAttribute('data-seconds', sec);
+                    const min = Math.floor(sec / 60);
+                    const remSec = sec % 60;
+                    el.textContent = `${String(min).padStart(2, '0')}:${String(remSec).padStart(2, '0')}`;
+                } else {
+                    el.textContent = "00:00 (Expired)";
+                    el.className = "text-danger";
+                }
+            });
+        }, 1000);
+    });
+</script>
 {% endblock %}

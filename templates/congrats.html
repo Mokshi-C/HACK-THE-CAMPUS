@@ -1,48 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Access Granted | HACK THE CAMPUS{% endblock %}
+{% block title %}Access Secured | HACK THE CAMPUS{% endblock %}
 
 {% block content %}
 <div class="cyber-card-gold text-center py-5">
     <div class="mb-4">
-        <i class="fa-solid fa-trophy text-gold fa-5x animate-pulse"></i>
+        <!-- Confetti Canvas Background specifically for congratulations card -->
+        <canvas id="confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1;"></canvas>
+        <i class="fa-solid fa-trophy text-gold fa-5x animate-pulse" style="position:relative; z-index:2;"></i>
     </div>
 
     <div class="font-mono text-neon mb-2">
         ═════════════════════════════════════
     </div>
-    <h1 class="font-orbitron text-gold font-weight-bold tracking-widest my-3">MASTER SERVER ACCESSED</h1>
-    <h2 class="font-mono text-neon tracking-widest mb-3">🔓 ACCESS GRANTED</h2>
+    <h1 class="font-orbitron text-gold font-weight-bold tracking-widest my-3" style="position:relative; z-index:2;">MASTER SERVER OVERRIDE</h1>
+    <h2 class="font-mono text-neon tracking-widest mb-3" style="position:relative; z-index:2;">🔓 ACCESS SECURED BY AGENTS</h2>
     <div class="font-mono text-neon mb-4">
         ═════════════════════════════════════
     </div>
 
-    <div class="my-4 font-orbitron">
+    <div class="my-4 font-orbitron" style="position:relative; z-index:2;">
         <h3 class="text-white">CONGRATULATIONS</h3>
         <h2 class="text-gold-gradient font-weight-bold">{{ team_name }}</h2>
     </div>
 
-    <hr class="border-gold my-4" style="opacity: 0.3;">
+    <hr class="border-gold my-4" style="opacity: 0.3; position:relative; z-index:2;">
 
-    <div class="row justify-content-center font-mono my-4">
+    <div class="row justify-content-center font-mono my-4" style="position:relative; z-index:2;">
         <div class="col-md-8 bg-black border border-warning rounded p-4 text-start">
             <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-                <span><i class="fa-solid fa-clock text-gold"></i> COMPLETION TIME:</span>
+                <span><i class="fa-solid fa-clock text-gold"></i> TOTAL DURATION:</span>
                 <span class="text-white font-weight-bold">{{ formatted_time }}</span>
             </div>
             <div class="d-flex justify-content-between">
-                <span><i class="fa-solid fa-heart-pulse text-neon"></i> MISSION STATUS:</span>
-                <span class="text-neon font-weight-bold">SUCCESSFUL</span>
+                <span><i class="fa-solid fa-shield-halved text-neon"></i> FIREWALL COMPROMISE:</span>
+                <span class="text-neon font-weight-bold">CLEARED SUCCESSFULLY</span>
             </div>
         </div>
     </div>
 
-    <div class="d-flex flex-column gap-2 mt-4">
-        <a href="/leaderboard" class="btn btn-gold w-100 font-orbitron py-3">
-            <i class="fa-solid fa-list-ol"></i> VIEW LEADERBOARD
-        </a>
-        <a href="/logout" class="btn btn-outline-secondary w-100 font-mono btn-sm">
-            Exit System Session
+    <div class="d-flex flex-column gap-2 mt-4" style="position:relative; z-index:2;">
+        <a href="/logout" class="btn btn-gold w-100 font-orbitron py-3">
+            <i class="fa-solid fa-power-off"></i> CLOSE OPS TERMINAL
         </a>
     </div>
 </div>
@@ -50,9 +49,59 @@
 
 {% block scripts %}
 <script>
-    // Play celebratory victory sound once loaded
+    // Confetti implementation
     window.addEventListener('load', () => {
+        // Voiceover victory readout
+        setTimeout(() => {
+            window.speechNarrator.speak("Congratulations Agent. The exploit was successful. ShadowByte has been defeated, and Master Server Access has been restored. Excellent work.");
+        }, 800);
+
         CyberSound.playVictory();
+
+        // Confetti canvas animation
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const cCtx = confettiCanvas.getContext('2d');
+        confettiCanvas.width = confettiCanvas.parentElement.clientWidth;
+        confettiCanvas.height = confettiCanvas.parentElement.clientHeight;
+
+        const pieceCount = 80;
+        const pieces = [];
+
+        for (let i = 0; i < pieceCount; i++) {
+            pieces.push({
+                x: Math.random() * confettiCanvas.width,
+                y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                size: Math.random() * 5 + 5,
+                color: ['#00FF88', '#00D9FF', '#FFD700', '#FF4444'][Math.floor(Math.random() * 4)],
+                speedX: (Math.random() - 0.5) * 4,
+                speedY: Math.random() * 3 + 2,
+                rotation: Math.random() * 360,
+                rotSpeed: Math.random() * 5 - 2.5
+            });
+        }
+
+        function drawConfetti() {
+            cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            pieces.forEach(p => {
+                cCtx.save();
+                cCtx.translate(p.x, p.y);
+                cCtx.rotate(p.rotation * Math.PI / 180);
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                cCtx.restore();
+
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.rotation += p.rotSpeed;
+
+                if (p.y > confettiCanvas.height) {
+                    p.y = -20;
+                    p.x = Math.random() * confettiCanvas.width;
+                }
+            });
+            requestAnimationFrame(drawConfetti);
+        }
+        drawConfetti();
     });
 </script>
 {% endblock %}

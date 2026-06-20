@@ -2,6 +2,42 @@
 
 {% block title %}Mission Complete | HACK THE CAMPUS{% endblock %}
 
+{% block head %}
+<!-- Include HTML5-QRCode Scanner Library CDN -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<style>
+    #qr-reader {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        border: 1px solid rgba(0, 217, 255, 0.4) !important;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    #qr-reader__dashboard_section_csr button {
+        background: transparent !important;
+        color: var(--cyber-blue) !important;
+        border: 1px solid var(--cyber-blue) !important;
+        padding: 6px 12px !important;
+        font-family: 'Orbitron', sans-serif !important;
+        border-radius: 4px !important;
+        text-transform: uppercase !important;
+        margin: 5px !important;
+        transition: all 0.3s ease !important;
+    }
+    #qr-reader__dashboard_section_csr button:hover {
+        background: var(--cyber-blue) !important;
+        color: #000 !important;
+        box-shadow: var(--blue-glow) !important;
+    }
+    #qr-reader__status_span {
+        color: #777 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="cyber-card-gold text-center">
     <div class="mb-4">
@@ -26,9 +62,43 @@
         </div>
     </div>
 
+    <!-- Movement instruction & QR Scanner Interface -->
     <div class="terminal-box bg-dark my-4 font-mono text-center">
         <h5 class="text-warning mb-3"><i class="fa-solid fa-person-running"></i> PHYSICAL MOVEMENT REQUIRED</h5>
         <h4 class="text-white">Proceed to <span class="text-gold">{{ next_loc }}</span> and scan <span class="text-neon">QR #{{ next_qr }}</span></h4>
+        
+        <!-- Camera-Based QR Code Reader Section -->
+        <div class="my-4 px-2">
+            <h5 class="text-blue font-orbitron mb-3"><i class="fa-solid fa-camera"></i> SCAN STATION CAMERAS</h5>
+            <div id="qr-reader"></div>
+            <div id="qr-result" class="text-neon mt-2 font-mono" style="font-size: 0.9rem;"></div>
+        </div>
+    </div>
+
+    <!-- Dual Mode Fallback: Manual Security Override Code Form -->
+    <div class="border border-warning rounded bg-black p-4 text-start font-mono my-4">
+        <h5 class="text-warning font-orbitron mb-2"><i class="fa-solid fa-circle-exclamation"></i> CAMERA BROKEN? EMERGENCY OVERRIDE</h5>
+        <p class="text-muted" style="font-size: 0.85rem;">If the camera scanner fails, type the secret bypass key code printed on the bottom of the physical QR sign card.</p>
+        
+        <form method="POST" action="/verify_bypass" class="row g-2 align-items-center">
+            <input type="hidden" name="qr_id" value="{{ next_qr }}">
+            <div class="col-sm-9">
+                <input 
+                    type="text" 
+                    name="bypass_key" 
+                    class="form-control hacker-input border-warning text-uppercase w-100" 
+                    placeholder="Enter printed secret override passcode..." 
+                    required>
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-gold w-100 font-orbitron py-2" style="font-size: 0.9rem;">OVERRIDE</button>
+            </div>
+        </form>
+        {% if error %}
+        <div class="error-msg mt-2">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Debug/Development Simulation Panel -->
@@ -46,6 +116,41 @@
     // Play success chime immediately on load
     window.addEventListener('load', () => {
         CyberSound.playSuccess();
+        
+        // Initialize HTML5-QRCode Scanner
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", 
+            { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            },
+            /* verbose= */ false
+        );
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Stop scanning once code is detected
+            html5QrcodeScanner.clear();
+            document.getElementById('qr-result').innerText = "SYSTEM: Target Scan Captured. Decoding URL signal...";
+            CyberSound.playSuccess();
+
+            // The scanned text should be a URL containing "/qr/X". Redirect to whatever URL is scanned.
+            // If it is just a relative URL or absolute path, route the browser there.
+            setTimeout(() => {
+                if (decodedText.startsWith("http://") || decodedText.startsWith("https://") || decodedText.startsWith("/")) {
+                    window.location.href = decodedText;
+                } else {
+                    // fallback if they just scan raw number string e.g. "2" instead of full "/qr/2"
+                    window.location.href = "/qr/" + decodedText;
+                }
+            }, 800);
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually silent to avoid logspam
+        }
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     });
 </script>
 {% endblock %}

@@ -1,40 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Master Server Override | HACK THE CAMPUS{% endblock %}
+{% block title %}Final Exploit | HACK THE CAMPUS{% endblock %}
 
 {% block content %}
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="font-orbitron text-neon m-0"><i class="fa-solid fa-server"></i> FINAL STAGE</h2>
+        <h2 class="font-orbitron text-danger m-0"><i class="fa-solid fa-server"></i> FINAL STAGE</h2>
         <span class="difficulty-badge diff-hard">EXPERT</span>
     </div>
     
-    <h1 class="cyber-title font-orbitron text-gold"><i class="fa-solid fa-skull-crossbones"></i> MASTER SERVER ACCESS</h1>
+    <h1 class="cyber-title font-orbitron text-gold"><i class="fa-solid fa-skull-crossbones"></i> MASTER SERVER EXPLOIT</h1>
     
     <hr class="border-warning mb-4">
 
     <!-- Mission Context Story -->
     <div class="mission-story font-mono text-muted mb-4">
-        <p>> Security clearance achieved. The core database mainframe is directly in front of you. To access the files and register your completion time, provide the master override token key.</p>
+        <p>> Clearance acquired. You have reached the core database database portal room. To trigger the final exploit simulation override, provide the master clearance passcode.</p>
     </div>
 
     <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Combine the key fragments collected from previous check-points and scan codes to construct the final access key.
+        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Combine previous key fragments to execute the database bypass override sequence.
+    </div>
+
+    <!-- SQL injection simulation hints -->
+    <div class="terminal-box bg-black py-3 mb-4 text-start font-mono text-muted" style="font-size: 0.85rem;">
+        <span class="text-white">// TARGET DATABASE OVERRIDE CONSTRUCT:</span><br>
+        SELECT * FROM admin WHERE token = '<span class="text-gold">YOUR_INPUT</span>' AND override = TRUE;<br>
+        <span class="text-white">// HINT: Final bypass credential override code value is "LAB5".</span>
     </div>
 
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
-            <label class="form-label text-gold font-mono"><i class="fa-solid fa-key"></i> MASTER ACCESS KEY</label>
+            <label class="form-label text-gold font-mono"><i class="fa-solid fa-key"></i> EXPLOIT OVERRIDE CODE</label>
             <input
                 type="text"
                 name="answer"
                 class="form-control hacker-input text-uppercase font-mono border-warning"
-                placeholder="Enter final master key..."
+                placeholder="Enter bypass key..."
                 required>
         </div>
 
         <button type="submit" class="btn btn-gold w-100 font-orbitron">
-            <i class="fa-solid fa-unlock-keyhole"></i> OVERRIDE AND RUN EXPLOIT
+            <i class="fa-solid fa-unlock-keyhole"></i> TRIGGER FINAL SQL INJECTION EXPLOIT
         </button>
     </form>
 
@@ -49,4 +56,14 @@
     </script>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission 5: Final Exploit. The master server portal database is locked behind a secure sql login field. Construct the bypass override token logic payload to complete your mission, agent.");
+        }, 800);
+    });
+</script>
 {% endblock %}

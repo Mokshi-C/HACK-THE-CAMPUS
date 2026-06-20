@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Mission Failed | HACK THE CAMPUS{% endblock %}
+
+{% block content %}
+<div class="cyber-card-red text-center py-5">
+    <div class="mb-4">
+        <i class="fa-solid fa-triangle-exclamation text-danger fa-5x animate-pulse"></i>
+    </div>
+
+    <div class="font-mono text-danger mb-2">
+        ═════════════════════════════════════
+    </div>
+    <h1 class="font-orbitron text-danger font-weight-bold tracking-widest my-3">MISSION FAILED</h1>
+    <h2 class="font-mono text-danger tracking-widest mb-3">🔒 CONNECTION TERMINATED</h2>
+    <div class="font-mono text-danger mb-4">
+        ═════════════════════════════════════
+    </div>
+
+    <div class="my-4 font-mono">
+        <h4 class="text-white">COUNTDOWN TIMER EXPIRED</h4>
+        <p class="text-muted mt-2">> Rogue code traces detected by ShadowByte. Master server connection locked. Access keys have been neutralized.</p>
+    </div>
+
+    <hr class="border-danger my-4" style="opacity: 0.3;">
+
+    <div class="d-flex flex-column gap-2 mt-4">
+        <a href="/logout" class="btn btn-gold w-100 font-orbitron py-3">
+            <i class="fa-solid fa-rotate-left"></i> RESTART SYSTEM CONNECTION
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', () => {
+        // Play failed error sequence
+        CyberSound.playError();
+        setTimeout(() => {
+            window.speechNarrator.speak("Mission Failed. Connection to the master server has been lost. System parameters are compromised.");
+        }, 800);
+    });
+</script>
+{% endblock %}

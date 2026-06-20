@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASYMMETRIC Presents: HACK THE CAMPUS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #050505;
+        }
+        .loading-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .asymmetric-logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .asymmetric-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #FFD700;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        .mascot-container {
+            margin: 25px auto;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 2px solid #00D9FF;
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.5);
+            background: rgba(10, 10, 10, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .mascot-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .log-box {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            height: 120px;
+            overflow-y: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #00FF88;
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
+            margin-bottom: 25px;
+        }
+        .cyber-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.2);
+        }
+        .cyber-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00D9FF, #00FF88);
+            box-shadow: 0 0 10px #00D9FF;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="loading-container">
+        <!-- Asymmetric Logo Text representation -->
+        <div class="asymmetric-logo-container">
+            <span class="asymmetric-logo-text glitch-text">▲ ASYMMETRIC ▲</span>
+        </div>
+
+        <div class="font-orbitron text-white font-weight-bold tracking-widest mb-1" style="font-size: 0.9rem; letter-spacing: 4px;">
+            PRESENTS
+        </div>
+        <h1 class="cyber-title font-orbitron glitch-text my-2" style="font-size: 2.6rem;">
+            HACK THE CAMPUS
+        </h1>
+        <div class="font-mono text-gold mb-3" style="font-size: 0.95rem; letter-spacing: 2px;">
+            AR + QR CYBER TREASURE HUNT
+        </div>
+
+        <!-- Mascot Bitmoji in circle -->
+        <div class="mascot-container">
+            <img src="{{ url_for('static', filename='bitmoji.png') }}" alt="Mascot" class="mascot-img">
+        </div>
+
+        <!-- Terminal Logs -->
+        <div class="log-box" id="log-box">
+            <div id="log-content"></div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="cyber-bar mb-2">
+            <div class="cyber-progress" id="cyber-progress"></div>
+        </div>
+        <div class="font-mono text-blue text-end" id="progress-pct" style="font-size: 0.8rem;">0%</div>
+    </div>
+
+    <!-- Matrix rain script -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = Math.floor(canvas.width / 20) + 1;
+        const ypos = Array(columns).fill(0);
+
+        function matrix() {
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00FF88';
+            ctx.font = '15pt Courier New';
+
+            ypos.forEach((y, ind) => {
+                const text = String.fromCharCode(Math.random() * 128);
+                const x = ind * 20;
+                ctx.fillText(text, x, y);
+                if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+                else ypos[ind] = y + 20;
+            });
+        }
+        setInterval(matrix, 50);
+
+        // Fake Logs & Loading Progression
+        const logs = [
+            "> Initializing Mission Control...",
+            "> Connecting to Master Server...",
+            "> Bypassing Campus Firewall Nodes...",
+            "> Establishing Secure Link...",
+            "> Decrypting Security Sockets...",
+            "> Access Granted...",
+            "> Establishing Tunnel Connection..."
+        ];
+
+        let logIndex = 0;
+        const logContent = document.getElementById('log-content');
+        const progressEl = document.getElementById('cyber-progress');
+        const pctEl = document.getElementById('progress-pct');
+
+        function addLog() {
+            if (logIndex < logs.length) {
+                logContent.innerHTML += logs[logIndex] + "<br>";
+                logIndex++;
+                const logBox = document.getElementById('log-box');
+                logBox.scrollTop = logBox.scrollHeight;
+                setTimeout(addLog, 500);
+            }
+        }
+        addLog();
+
+        let progressVal = 0;
+        function updateProgress() {
+            if (progressVal < 100) {
+                progressVal += Math.floor(Math.random() * 3) + 1;
+                if (progressVal > 100) progressVal = 100;
+                progressEl.style.width = progressVal + '%';
+                pctEl.textContent = progressVal + '%';
+                setTimeout(updateProgress, 50);
+            } else {
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('home_page') }}";
+                }, 400);
+            }
+        }
+        updateProgress();
+    </script>
+</body>
+</html>

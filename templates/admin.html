@@ -110,6 +110,8 @@
                     <td class="text-center">
                         {% if team.completed == 1 %}
                             <span class="badge bg-success text-black"><i class="fa-solid fa-check-double"></i> COMPLETE</span>
+                        {% elif team.aborted == 1 %}
+                            <span class="badge bg-secondary text-white"><i class="fa-solid fa-power-off"></i> ABORTED</span>
                         {% elif team.remaining_seconds <= 0 %}
                             <span class="badge bg-danger text-white"><i class="fa-solid fa-triangle-exclamation"></i> TIMEOUT</span>
                         {% else %}
@@ -119,12 +121,15 @@
                     <td class="text-center font-mono">
                         {% if team.completed == 1 %}
                             <span class="text-muted">N/A (Solved)</span>
+                        {% elif team.aborted == 1 %}
+                            <span class="text-muted">N/A (Aborted)</span>
                         {% elif team.remaining_seconds <= 0 %}
                             <span class="text-danger">00:00 (Expired)</span>
                         {% else %}
                             <span class="text-warning font-weight-bold countdown-tracker" data-seconds="{{ team.remaining_seconds }}">{{ team.remaining_time_formatted }}</span>
                         {% endif %}
                     </td>
+
                     <td class="text-center text-neon font-weight-bold">{{ team.score }} PTS</td>
                     <td class="text-center" style="font-size: 0.75rem;">
                         <span class="text-muted">S:</span> {{ team.start_time }}<br>

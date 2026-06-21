@@ -2,6 +2,46 @@
 
 {% block title %}Mission 2 | HACK THE CAMPUS{% endblock %}
 
+{% block head %}
+<style>
+    /* Premium Story Panel styling */
+    .story-panel {
+        background: rgba(8, 8, 8, 0.8);
+        border-left: 4px solid var(--neon-green);
+        border-radius: 4px 12px 12px 4px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
+    }
+    .story-text {
+        color: #D8D8D8;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        margin-bottom: 12px;
+    }
+    .objective-text {
+        color: #FFFFFF;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    .hint-section {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+    .hint-text {
+        color: #FFD700;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin-top: 10px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -9,31 +49,38 @@
         <span class="difficulty-badge diff-medium">MEDIUM</span>
     </div>
     
-    <h4 class="font-orbitron text-white">Code Override: Logic Execution</h4>
+    <h4 class="font-orbitron text-white">Code Override</h4>
     
     <hr class="border-neon mb-4">
 
-    <!-- Mission Context Story -->
-    <div class="mission-story font-mono text-muted mb-4">
-        <p>> ShadowByte has locked down the network interface gateway with a computational script logic barrier. Simulate the execution stack of the Python script below to determine the exit code signature.</p>
+    <!-- Dedicated Story Panel -->
+    <div class="story-panel font-rajdhani">
+        <p class="story-text">
+            "The Stationery terminal contains a corrupted execution script. Recover the output before the system times out."
+        </p>
+        <p class="objective-text">
+            <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Trace the loop logic execution and compute the console return code output.
+        </p>
     </div>
 
-    <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Calculate the output printed by the compiler loop block.
-    </div>
-
+    <!-- Challenge Target -->
     <div class="terminal-box bg-black py-3">
-        <pre class="m-0 text-neon font-mono">
-x = 5
-y = 3
+        <pre class="m-0 text-neon font-mono" style="font-size: 0.95rem; line-height: 1.5;">
+def mystery(n):
+    total = 0
+    for i in range(1, n+1):
+        if i % 2 == 0:
+            total += i
+    return total
 
-print(x**y)
+print(mystery(10))
         </pre>
     </div>
 
+    <!-- Input Form -->
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
-            <label class="form-label text-blue font-mono"><i class="fa-solid fa-terminal"></i> COMPILE SIGNAL VALUE</label>
+            <label class="form-label text-blue font-mono"><i class="fa-solid fa-terminal"></i> COMPILER OUTPUT</label>
             <input
                 type="text"
                 name="answer"
@@ -42,10 +89,67 @@ print(x**y)
                 required>
         </div>
 
-        <button type="submit" class="btn btn-neon w-100 font-orbitron">
-            <i class="fa-solid fa-circle-check"></i> OVERRIDE & EXPLOIT
+        <button type="submit" class="btn btn-neon w-100 font-orbitron mb-3">
+            <i class="fa-solid fa-circle-check"></i> INJECT STACK OVERRIDE
         </button>
     </form>
+
+    <!-- Hint System -->
+    <div class="hint-section">
+        <div class="d-flex gap-2 justify-content-center">
+            {% if not hint1_used %}
+            <form method="POST" action="/reveal_hint" onsubmit="return confirm('Reveal Hint 1? This will deduct 45 seconds from your timer.');">
+                <input type="hidden" name="hint_num" value="1">
+                <button type="submit" class="btn btn-outline-warning font-mono btn-sm">
+                    <i class="fa-solid fa-lightbulb"></i> REVEAL HINT 1 (-45s)
+                </button>
+            </form>
+            {% else %}
+            <button class="btn btn-warning font-mono btn-sm" disabled>
+                <i class="fa-solid fa-check"></i> HINT 1 ACTIVE
+            </button>
+            {% endif %}
+
+            {% if not hint2_used %}
+            <form method="POST" action="/reveal_hint" onsubmit="return confirm('Reveal Hint 2? This will deduct 90 seconds from your timer.');">
+                <input type="hidden" name="hint_num" value="2">
+                <button type="submit" class="btn btn-outline-warning font-mono btn-sm">
+                    <i class="fa-solid fa-lightbulb"></i> REVEAL HINT 2 (-90s)
+                </button>
+            </form>
+            {% else %}
+            <button class="btn btn-warning font-mono btn-sm" disabled>
+                <i class="fa-solid fa-check"></i> HINT 2 ACTIVE
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Render active hints -->
+        {% if hint1_used %}
+        <div class="hint-text border-top border-warning-subtle pt-2">
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 1:</strong> The range function iterates from 1 to 10 inclusive.
+        </div>
+        {% endif %}
+        {% if hint2_used %}
+        <div class="hint-text border-top border-warning-subtle pt-2">
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 2:</strong> Sum all even numbers between 1 and 10: 2 + 4 + 6 + 8 + 10.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recovered Value Card (Subtle) -->
+    <div class="mt-4 pt-3 border-top border-secondary-subtle opacity-75">
+        <div class="card bg-black border-secondary text-secondary font-mono p-3 mx-auto" style="max-width: 450px; font-size: 0.85rem; background-color: rgba(0,0,0,0.6) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-1 border-bottom border-secondary pb-1">
+                <span>[NETWORK TRACE]</span>
+                <span class="text-neon" style="font-size: 0.75rem; color: #00ff88 !important;">✓ DECRYPTED</span>
+            </div>
+            <div class="text-start mt-2">
+                <span style="color: #aaa;">Status:</span> Packet decrypted.<br>
+                <span style="color: #aaa;">Recovered Value:</span> <strong class="text-white">17</strong>
+            </div>
+        </div>
+    </div>
 
     {% if error %}
     <div class="error-msg mt-3 font-mono">
@@ -64,7 +168,7 @@ print(x**y)
 <script>
     window.addEventListener('load', () => {
         setTimeout(() => {
-            window.speechNarrator.speak("Mission 2: Code Override. Evaluate the server execution code block. We need the final compile signal output to unlock the gateway.");
+            window.speechNarrator.speak("A corrupted script blocks access to the next checkpoint. Recover the execution output.");
         }, 800);
     });
 </script>

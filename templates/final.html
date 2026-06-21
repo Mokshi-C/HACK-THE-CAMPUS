@@ -1,49 +1,152 @@
 {% extends "base.html" %}
 
-{% block title %}Final Exploit | HACK THE CAMPUS{% endblock %}
+{% block title %}Master Server Access | HACK THE CAMPUS{% endblock %}
+
+{% block head %}
+<style>
+    /* Premium Story Panel styling */
+    .story-panel {
+        background: rgba(8, 8, 8, 0.85);
+        border-left: 4px solid var(--neon-green);
+        border-radius: 4px 12px 12px 4px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
+    }
+    .story-text {
+        color: #D8D8D8;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        margin-bottom: 12px;
+    }
+    .objective-text {
+        color: #FFFFFF;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    .hint-section {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+    .hint-text {
+        color: #FFD700;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin-top: 10px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .hacker-input-override {
+        background: rgba(0, 0, 0, 0.8) !important;
+        border: 2px solid var(--neon-green) !important;
+        color: var(--neon-green) !important;
+        font-size: 2rem !important;
+        text-align: center;
+        letter-spacing: 8px;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) !important;
+        transition: all 0.3s ease;
+    }
+    .hacker-input-override:focus {
+        border-color: #ffffff !important;
+        box-shadow: 0 0 25px rgba(0, 255, 136, 0.4) !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<!-- Full Screen Hacker Overriding Overlay (Hidden by default, triggered on correct answer submit) -->
+<div id="hack-override-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; color:#00ff88; z-index:9999; font-family:'JetBrains Mono', monospace; padding: 40px; box-sizing: border-box; overflow:hidden;">
+    <div id="hack-terminal-stream" style="font-size: 1.25rem; line-height: 2.2; max-width: 800px; margin: 40px auto; text-align: left;"></div>
+</div>
+
 <div class="cyber-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="font-orbitron text-danger m-0"><i class="fa-solid fa-server"></i> FINAL STAGE</h2>
-        <span class="difficulty-badge diff-hard">EXPERT</span>
+        <span class="difficulty-badge diff-hard">CLIMAX</span>
     </div>
     
-    <h1 class="cyber-title font-orbitron text-gold"><i class="fa-solid fa-skull-crossbones"></i> MASTER SERVER EXPLOIT</h1>
+    <h1 class="cyber-title font-orbitron text-neon" style="color: #00ff88 !important; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);"><i class="fa-solid fa-server"></i> SERVER OVERRIDE TERMINAL</h1>
     
-    <hr class="border-warning mb-4">
+    <hr class="border-success mb-4" style="border-color: #00ff88 !important; opacity: 0.5;">
 
-    <!-- Mission Context Story -->
-    <div class="mission-story font-mono text-muted mb-4">
-        <p>> Clearance acquired. You have reached the core database database portal room. To trigger the final exploit simulation override, provide the master clearance passcode.</p>
+    <!-- Dedicated Story Panel -->
+    <div class="story-panel font-rajdhani" style="border-left-color: #00ff88;">
+        <p class="story-text">
+            "We have successfully penetrated the firewall of the campus rogue server, but the core console is shielded. A master 8-digit cryptographic Override Key is required to disable the quarantine."
+        </p>
+        <p class="objective-text">
+            <span style="color: #00ff88;"><i class="fa-solid fa-crosshairs"></i> SYSTEM LOG:</span> All intelligence fragments have been recovered. To unlock the rogue server, enter the 8-digit Override Key.
+        </p>
     </div>
 
-    <div class="objective-box bg-black border border-secondary rounded p-3 mb-4 font-mono">
-        <span class="text-gold"><i class="fa-solid fa-crosshairs"></i> OBJECTIVE:</span> Combine previous key fragments to execute the database bypass override sequence.
-    </div>
-
-    <!-- SQL injection simulation hints -->
-    <div class="terminal-box bg-black py-3 mb-4 text-start font-mono text-muted" style="font-size: 0.85rem;">
-        <span class="text-white">// TARGET DATABASE OVERRIDE CONSTRUCT:</span><br>
-        SELECT * FROM admin WHERE token = '<span class="text-gold">YOUR_INPUT</span>' AND override = TRUE;<br>
-        <span class="text-white">// HINT: Final bypass credential override code value is "LAB5".</span>
-    </div>
-
-    <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
+    <!-- Exploit Form -->
+    <form method="POST" id="final-override-form" autocomplete="off">
         <div class="mb-4">
-            <label class="form-label text-gold font-mono"><i class="fa-solid fa-key"></i> EXPLOIT OVERRIDE CODE</label>
+            <label class="form-label text-neon font-mono mb-3" style="color: #00ff88; display: block; text-align: center;"><i class="fa-solid fa-terminal"></i> ENTER 8-DIGIT OVERRIDE KEY</label>
             <input
                 type="text"
                 name="answer"
-                class="form-control hacker-input text-uppercase font-mono border-warning"
-                placeholder="Enter bypass key..."
+                id="override-key-input"
+                class="form-control hacker-input-override font-mono"
+                placeholder="********"
+                maxlength="8"
+                pattern="\d{8}"
                 required>
+            <div class="form-text text-secondary font-mono text-center mt-3" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-info-circle"></i> Hint: Combine all recovered values in the order they were obtained.
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-gold w-100 font-orbitron">
-            <i class="fa-solid fa-unlock-keyhole"></i> TRIGGER FINAL SQL INJECTION EXPLOIT
+        <button type="submit" class="btn btn-outline-success w-100 font-orbitron mb-3 py-3" style="color: #00ff88; border-color: #00ff88; background: rgba(0, 255, 136, 0.05); text-shadow: 0 0 5px rgba(0,255,136,0.3); font-size: 1.1rem; font-weight: bold;">
+            <i class="fa-solid fa-radiation animate-pulse"></i> INITIATE CORE OVERRIDE SEQUENCE
         </button>
     </form>
+
+    <!-- Hint System -->
+    <div class="hint-section">
+        <div class="d-flex gap-2 justify-content-center">
+            {% if not hint1_used %}
+            <form method="POST" action="/reveal_hint" onsubmit="return confirm('Reveal Hint 1? This will deduct 45 seconds from your timer.');">
+                <input type="hidden" name="hint_num" value="1">
+                <button type="submit" class="btn btn-outline-warning font-mono btn-sm">
+                    <i class="fa-solid fa-lightbulb"></i> REVEAL HINT 1 (-45s)
+                </button>
+            </form>
+            {% else %}
+            <button class="btn btn-warning font-mono btn-sm" disabled>
+                <i class="fa-solid fa-check"></i> HINT 1 ACTIVE
+            </button>
+            {% endif %}
+
+            {% if not hint2_used %}
+            <form method="POST" action="/reveal_hint" onsubmit="return confirm('Reveal Hint 2? This will deduct 90 seconds from your timer.');">
+                <input type="hidden" name="hint_num" value="2">
+                <button type="submit" class="btn btn-outline-warning font-mono btn-sm">
+                    <i class="fa-solid fa-lightbulb"></i> REVEAL HINT 2 (-90s)
+                </button>
+            </form>
+            {% else %}
+            <button class="btn btn-warning font-mono btn-sm" disabled>
+                <i class="fa-solid fa-check"></i> HINT 2 ACTIVE
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Render active hints -->
+        {% if hint1_used %}
+        <div class="hint-text border-top border-warning-subtle pt-2">
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 1:</strong> Combine the 4 numerical values recovered from each location in the exact order they were solved (Stationery → Vending → Auditorium → Temple).
+        </div>
+        {% endif %}
+        {% if hint2_used %}
+        <div class="hint-text border-top border-warning-subtle pt-2">
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 2:</strong> Check the bottom of each solved mission page for the logs. The sequence is: Stationery (42), Vending (17), Auditorium (89), Temple (05).
+        </div>
+        {% endif %}
+    </div>
 
     {% if error %}
     <div class="error-msg mt-3 font-mono">
@@ -62,8 +165,80 @@
 <script>
     window.addEventListener('load', () => {
         setTimeout(() => {
-            window.speechNarrator.speak("Mission 5: Final Exploit. The master server portal database is locked behind a secure sql login field. Construct the bypass override token logic payload to complete your mission, agent.");
+            window.speechNarrator.speak("Master server terminal reached. All fragments recovered. Enter the eight digit override key to secure the campus.");
         }, 800);
+    });
+
+    const form = document.getElementById('final-override-form');
+    const input = document.getElementById('override-key-input');
+    const overlay = document.getElementById('hack-override-overlay');
+    const stream = document.getElementById('hack-terminal-stream');
+
+    form.addEventListener('submit', function(e) {
+        if (input.value.trim() === '42178905') {
+            e.preventDefault();
+            
+            // Play success sounds
+            if (window.CyberSound && typeof window.CyberSound.playSuccess === 'function') {
+                window.CyberSound.playSuccess();
+            }
+
+            // Show overlay
+            overlay.style.display = 'block';
+            
+            // Speak override status
+            if (window.speechNarrator && typeof window.speechNarrator.speak === 'function') {
+                window.speechNarrator.speak("Access Granted. Rogue server breached. Identity confirmed. Mission Complete.");
+            }
+
+            const lines = [
+                "> CONNECTING TO COMPROMISED SYSTEM PORT...",
+                "> OVERRIDE INITIATED: VALUE 42178905 DETECTED",
+                "> DECRYPTING ROOT FILESYSTEM PARITY SHARDS...",
+                "> BYPASSING ENDPOINT FIREWALL COUNTERMEASURES...",
+                "> ACCESS GRANTED",
+                "> Rogue server breached",
+                "> Identity confirmed",
+                "> Mission Complete"
+            ];
+
+            let lineIndex = 0;
+            
+            function printNextLine() {
+                if (lineIndex < lines.length) {
+                    const line = lines[lineIndex];
+                    const p = document.createElement('p');
+                    p.style.margin = '10px 0';
+                    if (line.startsWith('> CONNECTING') || line.startsWith('> OVERRIDE') || line.startsWith('> DECRYPTING') || line.startsWith('> BYPASSING')) {
+                        p.style.color = '#00d9ff';
+                    } else {
+                        p.style.color = '#00ff88';
+                        p.style.fontWeight = 'bold';
+                        p.style.textShadow = '0 0 10px rgba(0, 255, 136, 0.7)';
+                    }
+                    stream.appendChild(p);
+                    
+                    let charIndex = 0;
+                    function typeChar() {
+                        if (charIndex < line.length) {
+                            p.textContent += line[charIndex];
+                            charIndex++;
+                            setTimeout(typeChar, 20);
+                        } else {
+                            lineIndex++;
+                            setTimeout(printNextLine, 350);
+                        }
+                    }
+                    typeChar();
+                } else {
+                    setTimeout(() => {
+                        form.submit();
+                    }, 1200);
+                }
+            }
+            
+            printNextLine();
+        }
     });
 </script>
 {% endblock %}

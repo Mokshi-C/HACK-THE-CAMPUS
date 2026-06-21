@@ -62,7 +62,7 @@ def format_seconds(seconds):
     return f"{int(minutes)} Min {int(secs)} Sec"
 
 def get_remaining_seconds(team):
-    if team.get("completed"):
+    if team.get("completed") or team.get("aborted"):
         return 1500
     
     start_time_str = team.get("start_time")
@@ -70,18 +70,21 @@ def get_remaining_seconds(team):
         return 1500
         
     try:
-        # ISO string parsing
         if isinstance(start_time_str, datetime):
             start_time = start_time_str
         else:
             start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00"))
         now = datetime.now(timezone.utc)
         elapsed = (now - start_time).total_seconds()
-        remaining = 1500 - int(elapsed)
+        
+        # Deduct penalty seconds
+        penalty = team.get("penalty_seconds", 0) or 0
+        remaining = 1500 - int(elapsed) - penalty
         return max(0, remaining)
     except Exception as e:
         print(f"Error parsing date {start_time_str}: {e}")
         return 1500
+
 
 # Enforce route timers and redirects
 def verify_session_timer():
@@ -135,9 +138,12 @@ def inject_team_info():
                 "score": score,
                 "progress_pct": progress_pct,
                 "progress_bar": progress_bar,
-                "progress_text": progress_text
+                "progress_text": progress_text,
+                "hint1_used": team.get("hint1_used", False),
+                "hint2_used": team.get("hint2_used", False)
             }
     return {"team_logged_in": False}
+
 
 # -----------------------------
 # LANDING & REGISTRATION
@@ -207,7 +213,10 @@ def register():
             "completion_time": None,
             "completed": False,
             "winner_status": False,
-            "score": 0
+            "score": 0,
+            "penalty_seconds": 0,
+            "hint1_used": False,
+            "hint2_used": False
         }
         session["team_id"] = t_id
         mock_progress.append({"team_id": t_id, "qr_id": 1})
@@ -228,7 +237,10 @@ def register():
             "start_time": now_str,
             "score": 0,
             "completed": False,
-            "winner_status": False
+            "winner_status": False,
+            "penalty_seconds": 0,
+            "hint1_used": False,
+            "hint2_used": False
         }).execute()
         
         if insert_response.data:
@@ -241,6 +253,7 @@ def register():
             }).execute()
             
             return redirect(url_for("level1"))
+
     except Exception as e:
         print(f"Error registering team: {e}")
         
@@ -315,10 +328,10 @@ def success(level_id):
         return redirect(url_for(f"level{current_level}" if current_level < 5 else "final"))
     
     locations = {
-        1: {"loc": "Library", "qr": 2, "reward": "LI"},
-        2: {"loc": "Seminar Hall", "qr": 3, "reward": "BR"},
-        3: {"loc": "Block C", "qr": 4, "reward": "AR"},
-        4: {"loc": "Master Server Room", "qr": 5, "reward": "Y"}
+        1: {"loc": "Stationery Shop", "qr": 2, "reward": "SH"},
+        2: {"loc": "Vending Machine", "qr": 3, "reward": "AD"},
+        3: {"loc": "Main Auditorium", "qr": 4, "reward": "OW"},
+        4: {"loc": "Temple", "qr": 5, "reward": "BYTE"}
     }
     
     info = locations.get(level_id, {"loc": "Next Mission Area", "qr": level_id+1, "reward": "Fragment"})
@@ -352,13 +365,14 @@ def verify_bypass():
 
     # Secret bypass passcodes matches: QR-ID -> PASSCODE
     bypass_keys = {
-        2: "BYPASS_LIB_2",
-        3: "BYPASS_SEM_3",
-        4: "BYPASS_BLK_4",
-        5: "BYPASS_MST_5"
+        2: "BYPASS_STATIONERY_2",
+        3: "BYPASS_VENDING_3",
+        4: "BYPASS_AUDITORIUM_4",
+        5: "BYPASS_TEMPLE_5"
     }
 
     correct_key = bypass_keys.get(qr_id)
+
 
     if correct_key and bypass_key == correct_key:
         # Route logic behaves exactly like a successful physical QR code scan
@@ -367,25 +381,72 @@ def verify_bypass():
         # Re-render the checkpoint screen but pass along invalid key credentials error message
         level_id = qr_id - 1
         locations = {
-            1: {"loc": "Library", "qr": 2, "reward": "LI"},
-            2: {"loc": "Seminar Hall", "qr": 3, "reward": "BR"},
-            3: {"loc": "Block C", "qr": 4, "reward": "AR"},
-            4: {"loc": "Master Server Room", "qr": 5, "reward": "Y"}
+            1: {"loc": "Stationery Shop", "qr": 2, "reward": "SH"},
+            2: {"loc": "Vending Machine", "qr": 3, "reward": "AD"},
+            3: {"loc": "Main Auditorium", "qr": 4, "reward": "OW"},
+            4: {"loc": "Temple", "qr": 5, "reward": "BYTE"}
         }
         info = locations.get(level_id, {"loc": "Next Mission Area", "qr": qr_id, "reward": "Fragment"})
         return render_template(
             "success.html",
             level_id=level_id,
             next_loc=info["loc"],
-            next_qr=qr_id,
+            next_qr=info["qr"],
             reward=info["reward"],
             error="INVALID OVERRIDE CODE: Signature signature unrecognized."
         )
 
-# -----------------------------
 
+
+
+# -----------------------------
+# DEDICATED HINT ACCESS CONTROLLER
+# -----------------------------
+@app.route("/reveal_hint", methods=["POST"])
+def reveal_hint():
+    if "team_id" not in session:
+        return redirect(url_for("home_page"))
+    
+    team = get_team_by_id(session["team_id"])
+    if not team:
+        return redirect(url_for("logout"))
+        
+    if get_remaining_seconds(team) <= 0 and not team.get("completed"):
+        return redirect(url_for("mission_failed"))
+
+    hint_num = int(request.form.get("hint_num", 0))
+    current_level = team.get("current_level", 1)
+
+    # Validate hint ID
+    if hint_num not in [1, 2]:
+        return redirect(url_for(f"level{current_level}" if current_level < 5 else "final"))
+
+    hint_key = f"hint{hint_num}_used"
+    
+    # If this hint has not been used yet, apply the penalty (Hint 1: 45s, Hint 2: 90s) and set state to used
+    if not team.get(hint_key):
+        penalty_to_add = 45 if hint_num == 1 else 90
+        new_penalty = (team.get("penalty_seconds", 0) or 0) + penalty_to_add
+        if use_mock:
+            mock_teams[session["team_id"]][hint_key] = True
+            mock_teams[session["team_id"]]["penalty_seconds"] = new_penalty
+        else:
+            try:
+                supabase.table("teams").update({
+                    hint_key: True,
+                    "penalty_seconds": new_penalty
+                }).eq("id", session["team_id"]).execute()
+            except Exception as e:
+                print(f"Error updating hint usage: {e}")
+
+    # Redirect back to the active mission screen
+    return redirect(url_for(f"level{current_level}" if current_level < 5 else "final"))
+
+
+# -----------------------------
 # MISSION LEVELS (1-4)
 # -----------------------------
+
 @app.route("/level1", methods=["GET", "POST"])
 def level1():
     t_red = verify_session_timer()
@@ -416,20 +477,25 @@ def level1():
     error = ""
     if request.method == "POST":
         answer = request.form["answer"].strip().upper()
-        if answer == "LIBRARY":
+        if answer == "STATIONERY":
             if use_mock:
                 mock_teams[session["team_id"]]["current_level"] = 2
                 mock_teams[session["team_id"]]["score"] = 100
+                mock_teams[session["team_id"]]["hint1_used"] = False
+                mock_teams[session["team_id"]]["hint2_used"] = False
             else:
                 supabase.table("teams").update({
                     "current_level": 2,
-                    "score": 100
+                    "score": 100,
+                    "hint1_used": False,
+                    "hint2_used": False
                 }).eq("id", session["team_id"]).execute()
             return redirect(url_for("success", level_id=1))
         else:
             error = "ACCESS DENIED: Decryption Key Invalid"
 
     return render_template("level1.html", error=error)
+
 
 @app.route("/level2", methods=["GET", "POST"])
 def level2():
@@ -474,20 +540,25 @@ def level2():
     error = ""
     if request.method == "POST":
         answer = request.form["answer"].strip()
-        if answer == "125":
+        if answer == "30":
             if use_mock:
                 mock_teams[session["team_id"]]["current_level"] = 3
                 mock_teams[session["team_id"]]["score"] = 200
+                mock_teams[session["team_id"]]["hint1_used"] = False
+                mock_teams[session["team_id"]]["hint2_used"] = False
             else:
                 supabase.table("teams").update({
                     "current_level": 3,
-                    "score": 200
+                    "score": 200,
+                    "hint1_used": False,
+                    "hint2_used": False
                 }).eq("id", session["team_id"]).execute()
             return redirect(url_for("success", level_id=2))
         else:
             error = "ACCESS DENIED: Compiler output incorrect"
 
     return render_template("level2.html", error=error)
+
 
 @app.route("/level3", methods=["GET", "POST"])
 def level3():
@@ -535,10 +606,14 @@ def level3():
             if use_mock:
                 mock_teams[session["team_id"]]["current_level"] = 4
                 mock_teams[session["team_id"]]["score"] = 300
+                mock_teams[session["team_id"]]["hint1_used"] = False
+                mock_teams[session["team_id"]]["hint2_used"] = False
             else:
                 supabase.table("teams").update({
                     "current_level": 4,
-                    "score": 300
+                    "score": 300,
+                    "hint1_used": False,
+                    "hint2_used": False
                 }).eq("id", session["team_id"]).execute()
             return redirect(url_for("success", level_id=3))
         else:
@@ -588,20 +663,25 @@ def level4():
     error = ""
     if request.method == "POST":
         answer = request.form["answer"].strip().upper()
-        if answer == "BETA":
+        if answer == "ASYMMETRIC":
             if use_mock:
                 mock_teams[session["team_id"]]["current_level"] = 5
                 mock_teams[session["team_id"]]["score"] = 400
+                mock_teams[session["team_id"]]["hint1_used"] = False
+                mock_teams[session["team_id"]]["hint2_used"] = False
             else:
                 supabase.table("teams").update({
                     "current_level": 5,
-                    "score": 400
+                    "score": 400,
+                    "hint1_used": False,
+                    "hint2_used": False
                 }).eq("id", session["team_id"]).execute()
             return redirect(url_for("success", level_id=4))
         else:
             error = "ACCESS DENIED: Binary bitstream parity error"
 
     return render_template("level4.html", error=error)
+
 
 # -----------------------------
 # FINAL ACCESS & EXPLOIT
@@ -635,8 +715,8 @@ def final():
 
     error = ""
     if request.method == "POST":
-        answer = request.form["answer"].strip().upper()
-        if answer == "LAB5":
+        answer = request.form["answer"].strip()
+        if answer == "42178905":
             finish_time = datetime.now(timezone.utc)
             finish_time_str = finish_time.isoformat()
             
@@ -668,6 +748,7 @@ def final():
             error = "FATAL ERROR: MASTER DECRYPTION OVERRIDE FAILED"
 
     return render_template("final.html", error=error)
+
 
 # -----------------------------
 # CONGRATS SCREEN
@@ -794,6 +875,8 @@ def admin():
                 duration = format_seconds(int((f_dt - s_dt).total_seconds()))
             except:
                 duration = "Solved"
+        elif t.get("aborted"):
+            duration = "Aborted"
         elif rem_sec <= 0:
             duration = "Timed Out"
 
@@ -812,11 +895,13 @@ def admin():
             "start_time": start_disp,
             "finish_time": finish_disp,
             "completed": 1 if t["completed"] else 0,
+            "aborted": 1 if t.get("aborted") else 0,
             "winner_status": t["winner_status"],
             "remaining_seconds": rem_sec,
             "remaining_time_formatted": f"{rem_sec // 60:02d}:{rem_sec % 60:02d}",
             "formatted_time": duration
         })
+
 
     processed_teams.sort(key=lambda x: x["id"], reverse=True)
 
@@ -872,8 +957,24 @@ def admin_export():
 # -----------------------------
 @app.route("/logout")
 def logout():
+    # Set aborted status in the database to keep history logs intact only if team has NOT completed
+    if "team_id" in session:
+        team_id = session["team_id"]
+        team = get_team_by_id(team_id)
+        if team and not team.get("completed"):
+            if use_mock:
+                if team_id in mock_teams:
+                    mock_teams[team_id]["aborted"] = True
+            else:
+                try:
+                    supabase.table("teams").update({"aborted": True}).eq("id", team_id).execute()
+                except Exception as e:
+                    print(f"Error marking team aborted: {e}")
+
     session.clear()
     return redirect(url_for("index"))
+
+
 
 @app.route("/admin/logout")
 def admin_logout():

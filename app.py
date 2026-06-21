@@ -16,6 +16,13 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "hack_the_campus_secret_secu
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
+@app.after_request
+def add_debug_headers(response):
+    response.headers["X-Debug-Use-Mock"] = str(use_mock)
+    response.headers["X-Debug-Has-Url"] = str(bool(SUPABASE_URL))
+    response.headers["X-Debug-Has-Key"] = str(bool(SUPABASE_KEY))
+    return response
+
 use_mock = False
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("WARNING: SUPABASE_URL or SUPABASE_KEY is missing. Falling back to local memory MOCK DATABASE for previewing frontend.")

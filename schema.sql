@@ -16,7 +16,11 @@ CREATE TABLE teams (
     completion_time TIMESTAMP WITH TIME ZONE,
     completed BOOLEAN DEFAULT FALSE,
     winner_status BOOLEAN DEFAULT FALSE,
-    score INTEGER DEFAULT 0
+    score INTEGER DEFAULT 0,
+    penalty_seconds INTEGER DEFAULT 0,
+    hint1_used BOOLEAN DEFAULT FALSE,
+    hint2_used BOOLEAN DEFAULT FALSE,
+    aborted BOOLEAN DEFAULT FALSE
 );
 
 -- Create Progress table to enforce QR code scanning progression

@@ -11,6 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "hack_the_campus_secret_secure_key")
 
+# Trigger redeploy to load Vercel env variables
 # Initialize Supabase Client (With local mock fallback for previewing)
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")

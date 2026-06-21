@@ -21,8 +21,10 @@ def add_debug_headers(response):
     response.headers["X-Debug-Use-Mock"] = str(use_mock)
     response.headers["X-Debug-Has-Url"] = str(bool(SUPABASE_URL))
     response.headers["X-Debug-Has-Key"] = str(bool(SUPABASE_KEY))
+    response.headers["X-Debug-Supabase-Error"] = str(supabase_error)
     return response
 
+supabase_error = "None"
 use_mock = False
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("WARNING: SUPABASE_URL or SUPABASE_KEY is missing. Falling back to local memory MOCK DATABASE for previewing frontend.")
@@ -32,6 +34,7 @@ else:
         from supabase import create_client, Client
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     except Exception as e:
+        supabase_error = str(e)
         print(f"Failed to connect to Supabase: {e}. Using mock database fallback.")
         use_mock = True
 

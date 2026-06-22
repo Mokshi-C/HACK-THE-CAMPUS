@@ -1,4 +1,4 @@
-<!-- The first Greek alphabet -->
+
 {% extends "base.html" %}
 
 {% block title %}Mission 3 | HACK THE CAMPUS{% endblock %}
@@ -72,6 +72,7 @@
     <!-- Input Form -->
     <form method="POST" autocomplete="off" onsubmit="CyberSound.playTick()">
         <div class="mb-4">
+            <!-- The first Greek alphabet -->
             <label class="form-label text-blue font-mono"><i class="fa-solid fa-terminal"></i> CLUE TOKEN</label>
             <input
                 type="text"
@@ -102,7 +103,11 @@
             </button>
             {% endif %}
 
-            {% if not hint2_used %}
+            {% if not hint1_used %}
+            <button class="btn btn-outline-secondary font-mono btn-sm" disabled title="Unlock Hint 1 first">
+                <i class="fa-solid fa-lock"></i> HINT 2 LOCKED
+            </button>
+            {% elif not hint2_used %}
             <form method="POST" action="/reveal_hint" onsubmit="return confirm('Reveal Hint 2? This will deduct 90 seconds from your timer.');">
                 <input type="hidden" name="hint_num" value="2">
                 <button type="submit" class="btn btn-outline-warning font-mono btn-sm">
@@ -119,13 +124,12 @@
         <!-- Render active hints -->
         {% if hint1_used %}
         <div class="hint-text border-top border-warning-subtle pt-2">
-            <i class="fa-solid fa-info-circle"></i> <strong>HINT 1:</strong> Right click and choose "Inspect" or "View Page Source" to examine the top of this document.
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 1:</strong> Right click and choose "Inspect" or "View Page Source" to examine the answer.
         </div>
         {% endif %}
         {% if hint2_used %}
         <div class="hint-text border-top border-warning-subtle pt-2">
-            <i class="fa-solid fa-info-circle"></i> <strong>HINT 2:</strong> What is the first letter of the Greek alphabet? (Starts with A, 5 letters).
-        </div>
+            <i class="fa-solid fa-info-circle"></i> <strong>HINT 2:</strong> What is the first letter of the Greek alphabet? 
         {% endif %}
     </div>
 

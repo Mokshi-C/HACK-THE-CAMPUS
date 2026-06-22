@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, R
 import os
 import csv
 import io
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+IST = timezone(timedelta(hours=5, minutes=30))
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
@@ -16,15 +17,6 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "hack_the_campus_secret_secu
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-@app.after_request
-def add_debug_headers(response):
-    response.headers["X-Debug-Use-Mock"] = str(use_mock)
-    response.headers["X-Debug-Has-Url"] = str(bool(SUPABASE_URL))
-    response.headers["X-Debug-Has-Key"] = str(bool(SUPABASE_KEY))
-    response.headers["X-Debug-Supabase-Error"] = str(supabase_error)
-    return response
-
-supabase_error = "None"
 use_mock = False
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("WARNING: SUPABASE_URL or SUPABASE_KEY is missing. Falling back to local memory MOCK DATABASE for previewing frontend.")
@@ -34,7 +26,6 @@ else:
         from supabase import create_client, Client
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     except Exception as e:
-        supabase_error = str(e)
         print(f"Failed to connect to Supabase: {e}. Using mock database fallback.")
         use_mock = True
 
@@ -82,10 +73,10 @@ def get_remaining_seconds(team):
         
     try:
         if isinstance(start_time_str, datetime):
-            start_time = start_time_str
+            start_time = start_time_str.astimezone(IST)
         else:
-            start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00"))
-        now = datetime.now(timezone.utc)
+            start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00")).astimezone(IST)
+        now = datetime.now(IST)
         elapsed = (now - start_time).total_seconds()
         
         # Deduct penalty seconds
@@ -220,7 +211,7 @@ def register():
             "leader_name": leader_name,
             "phone": phone,
             "current_level": 1,
-            "start_time": datetime.now(timezone.utc),
+            "start_time": datetime.now(IST),
             "completion_time": None,
             "completed": False,
             "winner_status": False,
@@ -239,7 +230,7 @@ def register():
             session["team_id"] = chk.data[0]["id"]
             return redirect(url_for("home_page"))
             
-        now_str = datetime.now(timezone.utc).isoformat()
+        now_str = datetime.now(IST).isoformat()
         insert_response = supabase.table("teams").insert({
             "team_name": team_name,
             "leader_name": leader_name,
@@ -433,6 +424,10 @@ def reveal_hint():
         return redirect(url_for(f"level{current_level}" if current_level < 5 else "final"))
 
     hint_key = f"hint{hint_num}_used"
+    
+    # Enforce sequential hint unlock: Hint 2 can only be unlocked if Hint 1 is already active
+    if hint_num == 2 and not team.get("hint1_used"):
+        return redirect(url_for(f"level{current_level}" if current_level < 5 else "final"))
     
     # If this hint has not been used yet, apply the penalty (Hint 1: 45s, Hint 2: 90s) and set state to used
     if not team.get(hint_key):
@@ -728,7 +723,7 @@ def final():
     if request.method == "POST":
         answer = request.form["answer"].strip()
         if answer == "42178905":
-            finish_time = datetime.now(timezone.utc)
+            finish_time = datetime.now(IST)
             finish_time_str = finish_time.isoformat()
             
             # Determine Winner
@@ -778,20 +773,20 @@ def congrats():
     total_seconds = 0
     try:
         if isinstance(start_str, datetime):
-            start_dt = start_str
+            start_dt = start_str.astimezone(IST)
         else:
-            start_dt = datetime.fromisoformat(start_str.replace("Z", "+00:00"))
+            start_dt = datetime.fromisoformat(start_str.replace("Z", "+00:00")).astimezone(IST)
         
         if isinstance(finish_str, datetime):
-            finish_dt = finish_str
+            finish_dt = finish_str.astimezone(IST)
         else:
-            finish_dt = datetime.fromisoformat(finish_str.replace("Z", "+00:00"))
+            finish_dt = datetime.fromisoformat(finish_str.replace("Z", "+00:00")).astimezone(IST)
             
         total_seconds = int((finish_dt - start_dt).total_seconds())
     except:
         pass
         
-    formatted_time = format_seconds(total_seconds)
+    formatted_time = format_seconds(total_seconds + (team.get("penalty_seconds", 0) or 0))
     
     return render_template("congrats.html", team_name=team.get("team_name"), formatted_time=formatted_time)
 
@@ -870,31 +865,39 @@ def admin():
 
         rem_sec = get_remaining_seconds(t)
         
+        # Parse times in IST
+        try:
+            if isinstance(t["start_time"], datetime):
+                s_dt = t["start_time"].astimezone(IST)
+            else:
+                s_dt = datetime.fromisoformat(t["start_time"].replace("Z", "+00:00")).astimezone(IST)
+            start_disp = s_dt.strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            s_dt = None
+            start_disp = t["start_time"]
+
+        f_dt = None
+        finish_disp = "N/A"
+        if t["completion_time"]:
+            try:
+                if isinstance(t["completion_time"], datetime):
+                    f_dt = t["completion_time"].astimezone(IST)
+                else:
+                    f_dt = datetime.fromisoformat(t["completion_time"].replace("Z", "+00:00")).astimezone(IST)
+                finish_disp = f_dt.strftime("%Y-%m-%d %H:%M:%S")
+            except:
+                finish_disp = t["completion_time"]
+
         duration = "In Progress"
         if t["completed"]:
             try:
-                if isinstance(t["start_time"], datetime):
-                    s_dt = t["start_time"]
-                else:
-                    s_dt = datetime.fromisoformat(t["start_time"].replace("Z", "+00:00"))
-                
-                if isinstance(t["completion_time"], datetime):
-                    f_dt = t["completion_time"]
-                else:
-                    f_dt = datetime.fromisoformat(t["completion_time"].replace("Z", "+00:00"))
-                    
-                duration = format_seconds(int((f_dt - s_dt).total_seconds()))
+                duration = format_seconds(int((f_dt - s_dt).total_seconds()) + (t.get("penalty_seconds", 0) or 0))
             except:
                 duration = "Solved"
         elif t.get("aborted"):
             duration = "Aborted"
         elif rem_sec <= 0:
             duration = "Timed Out"
-
-        start_disp = t["start_time"].strftime("%Y-%m-%d %H:%M:%S") if isinstance(t["start_time"], datetime) else t["start_time"][:19].replace("T", " ")
-        finish_disp = "N/A"
-        if t["completion_time"]:
-            finish_disp = t["completion_time"].strftime("%Y-%m-%d %H:%M:%S") if isinstance(t["completion_time"], datetime) else t["completion_time"][:19].replace("T", " ")
 
         processed_teams.append({
             "id": t["id"],
